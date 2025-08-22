@@ -8,7 +8,7 @@ export default function Layout() {
   return (
     <>
     <Navbar/>
-<div className='container mx-auto'>
+<div className='container mx-auto dark:bg-gray-800'>
   <Outlet/>
 </div>
     <Footer/>
