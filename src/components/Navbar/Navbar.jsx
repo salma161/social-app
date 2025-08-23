@@ -22,7 +22,7 @@ export default function Navbar() {
             >
               <span class="sr-only">Open user menu</span>
               <img
-                class="w-8 h-8 rounded-full"
+                class="w-8 h-8 cursor-pointer rounded-full"
                 src="/docs/images/people/profile-picture-3.jpg"
                 alt="user photo"
               />
@@ -83,18 +83,23 @@ export default function Navbar() {
               </svg>
             </button>
             <div className="flex gap-4 ms-8">
-              <button
-                type="button"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Login
-              </button>
-              <button
-                type="button"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Sign Up
-              </button>
+              <Link to="/login">
+                <button
+                  type="button"
+                  className="text-white bg-blue-700 cursor-pointer hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  Login
+                </button>
+              </Link>
+              <Link to="/register">
+                <button
+                  type="button"
+
+                  className="text-white cursor-pointer bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  Sign Up
+                </button>
+              </Link>
             </div>
           </div>
         </div>
