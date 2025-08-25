@@ -77,7 +77,7 @@ export default function Register() {
   return (
     <form
       onSubmit={handleSubmit(handleRegister)}
-      className="max-w-sm mx-auto p-8 pb-16"
+      className="max-w-sm mx-auto p-8 pb-16 pt-16 min-h-screen"
     >
       {apiError && (
         <h1 className="bg-red-500/80 font-semibold text-center border-2 border-red-500 mb-2 p-2 text-white">
