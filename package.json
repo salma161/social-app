@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.0.0",
+    "@hookform/resolvers": "^5.2.1",
     "@tailwindcss/vite": "^4.1.12",
     "axios": "^1.11.0",
     "flowbite": "^3.1.2",

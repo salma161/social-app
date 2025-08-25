@@ -1,18 +1,14 @@
-import React from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import z from "zod";
 
 export default function Register() {
-  const form = useForm({
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      rePassword: "",
-      dateOfBirth: "",
-      gender: "",
-    },
-  });
+  const navigate = useNavigate();
+  const [apiError, setapiError] = useState("");
+  const [isLoading, setisLoading] = useState(false);
 
   const schema = z
     .object({
@@ -43,19 +39,39 @@ export default function Register() {
         "please choose from the available options"
       ),
     })
-    .refine(
-      (object) => {
-        object.password === object.rePassword;
-      },
-      {
-        error: "password doesn't match",
-        path: ["rePassword"],
-      }
-    );
-  let { register, handleSubmit } = form;
+    .refine((object) => object.password === object.rePassword, {
+      error: "password doesn't match",
+      path: ["rePassword"],
+    });
+
+  const form = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      rePassword: "",
+      dateOfBirth: "",
+      gender: "",
+    },
+    resolver: zodResolver(schema),
+  });
+
+  let { register, handleSubmit, formState } = form;
 
   function handleRegister(data) {
-    console.log(data);
+    setisLoading(true);
+    axios
+      .post(`https://linked-posts.routemisr.com/users/signup`, data)
+      .then((res) => {
+        if (res.data.message == "success") {
+          navigate("/login");
+          setisLoading(false);
+        }
+      })
+      .catch((err) => {
+        setapiError(err.response.data.error);
+        setisLoading(false);
+      });
   }
 
   return (
@@ -63,27 +79,40 @@ export default function Register() {
       onSubmit={handleSubmit(handleRegister)}
       className="max-w-sm mx-auto p-8 pb-16"
     >
-      <div className="mb-5">
+      {apiError && (
+        <h1 className="bg-red-500/80 font-semibold text-center border-2 border-red-500 mb-2 p-2 text-white">
+          {apiError}
+        </h1>
+      )}
+      <div className="mb-2">
         <label
-          htmlhtmlFor="name"
+          htmlFor="name"
           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
         >
           Your Name
         </label>
         <input
-          type="name"
+          type="text"
           id="name"
           {...register("name")}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="Khaled Mohamed"
         />
       </div>
-      <div className="mb-5">
+
+      {formState.errors.name && formState.touchedFields.name ? (
+        <p className="text-red-500 font-medium mb-2">
+          {formState.errors.name.message}
+        </p>
+      ) : (
+        ""
+      )}
+      <div className="mb-2">
         <label
-          htmlhtmlFor="email"
+          htmlFor="email"
           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
         >
-          Your email
+          Your Email
         </label>
         <input
           type="email"
@@ -93,12 +122,19 @@ export default function Register() {
           placeholder="name@gmail.com"
         />
       </div>
-      <div className="mb-5">
+      {formState.errors.email && formState.touchedFields.email ? (
+        <p className="text-red-500 font-medium mb-2">
+          {formState.errors.email.message}
+        </p>
+      ) : (
+        ""
+      )}
+      <div className="mb-2">
         <label
-          htmlhtmlFor="password"
+          htmlFor="password"
           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
         >
-          Your password
+          Your Password
         </label>
         <input
           type="password"
@@ -108,12 +144,19 @@ export default function Register() {
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         />
       </div>
-      <div className="mb-5">
+      {formState.errors.password && formState.touchedFields.password ? (
+        <p className="text-red-500 font-medium mb-2">
+          {formState.errors.password.message}
+        </p>
+      ) : (
+        ""
+      )}
+      <div className="mb-2">
         <label
-          htmlhtmlFor="rePassword"
+          htmlFor="rePassword"
           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
         >
-          Re-Password
+          Re-password
         </label>
         <input
           type="password"
@@ -123,9 +166,16 @@ export default function Register() {
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         />
       </div>
-      <div className="mb-5">
+      {formState.errors.rePassword && formState.touchedFields.rePassword ? (
+        <p className="text-red-500 font-medium mb-2">
+          {formState.errors.rePassword.message}
+        </p>
+      ) : (
+        ""
+      )}
+      <div className="mb-2">
         <label
-          htmlhtmlFor="dateOfBirth"
+          htmlFor="dateOfBirth"
           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
         >
           Your Birthdate
@@ -137,15 +187,21 @@ export default function Register() {
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         />
       </div>
-      <div className="flex gap-6 mb-2">
-        <div className="flex items-center mb-4">
+      {formState.errors.dateOfBirth && formState.touchedFields.dateOfBirth ? (
+        <p className="text-red-500 font-medium mb-2">
+          {formState.errors.dateOfBirth.message}
+        </p>
+      ) : (
+        ""
+      )}
+      <div className="flex gap-6 mb-4">
+        <div className="flex items-center">
           <input
             id="male"
             type="radio"
             {...register("gender")}
             value="male"
             className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
-            checked
           />
           <label
             htmlFor="male"
@@ -154,7 +210,7 @@ export default function Register() {
             Male
           </label>
         </div>
-        <div className="flex items-center mb-4">
+        <div className="flex items-center">
           <input
             id="female"
             type="radio"
@@ -170,12 +226,27 @@ export default function Register() {
           </label>
         </div>
       </div>
+      {formState.errors.gender && formState.touchedFields.gender ? (
+        <p className="text-red-500 font-medium mb-2">
+          {formState.errors.gender.message}
+        </p>
+      ) : (
+        ""
+      )}
 
       <button
         type="submit"
+        disabled={isLoading}
         className="text-white cursor-pointer bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
       >
-        Submit
+        {isLoading ? (
+          <>
+            <span>Submit</span>
+            <i className="fa-solid fa-spinner fa-spin text-white ms-1"></i>
+          </>
+        ) : (
+          "Submit"
+        )}
       </button>
     </form>
   );

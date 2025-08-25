@@ -2,3 +2,10 @@
 @import "flowbite/src/themes/default";
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite";
+
+@layer base {
+  input:-webkit-autofill {
+    box-shadow: 0 0 0px 1000px theme("colors.gray.700") inset !important;
+    -webkit-text-fill-color: white !important;
+  }
+}
