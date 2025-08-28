@@ -7,6 +7,7 @@ import Profile from "./components/Profile/Profile.jsx";
 import Login from "./components/Login/Login.jsx";
 import Register from "./components/Register/Register.jsx";
 import Notfound from "./components/Notfound/Notfound.jsx";
+import UserContextProvider from "./Context/UserContext.jsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -40,7 +41,9 @@ function App() {
 
   return (
     <>
-      <RouterProvider router={router}></RouterProvider>
+      <UserContextProvider>
+        <RouterProvider router={router}></RouterProvider>
+      </UserContextProvider>
     </>
   );
 }

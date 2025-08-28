@@ -1,9 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Navigate, useNavigate } from "react-router-dom";
 import z from "zod";
+import { UserContext } from "../../Context/UserContext";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -19,19 +20,30 @@ export default function Login() {
       ),
   });
 
+  let { userLogin, setuserLogin } = useContext(UserContext);
+
   function handleLogin(data) {
     setisLoading(true);
     axios
       .post(`https://linked-posts.routemisr.com/users/signin`, data)
       .then((res) => {
         if (res.data.message == "success") {
-          navigate("/");
           setisLoading(false);
+          localStorage.setItem("userToken", res.data.token);
+          setuserLogin(res.data.token);
+          console.log(userLogin);
+          
+          navigate("/");
+       
+          
+
         }
       })
       .catch((err) => {
         setisLoading(false);
         setapiError(err.response.data.error);
+        console.log(err);
+        
       });
   }
   const form = useForm({
