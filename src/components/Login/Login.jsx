@@ -1,9 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Navigate, useNavigate } from "react-router-dom";
 import z from "zod";
+import { UserContext } from "../../Context/UserContext";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ export default function Login() {
         "must iclude at least 1 capital letter and 1 small letter and a number and 1 special char with lenght of 8 chars at least"
       ),
   });
+  let { userLogin, setuserLogin } = useContext(UserContext);
 
   function handleLogin(data) {
     setisLoading(true);
@@ -25,6 +27,10 @@ export default function Login() {
       .post(`https://linked-posts.routemisr.com/users/signin`, data)
       .then((res) => {
         if (res.data.message == "success") {
+          
+          localStorage.setItem("userToken", res.data.token);
+          setuserLogin(res.data.token);
+          console.log(res.data, userLogin);
           navigate("/");
           setisLoading(false);
         }
